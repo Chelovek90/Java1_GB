@@ -93,7 +93,7 @@ public class Map extends JPanel {
         repaint();
     }
 
-    private void render(Graphics g) {
+    private void render(Graphics g, Graphics h, Graphics a) {
         if (!initialized) return;
         int width = getWidth();
         int height = getHeight();
@@ -112,18 +112,20 @@ public class Map extends JPanel {
             for (int x = 0; x < fieldSizeX; x++) {
                 if (isCellEmpty(x, y)) continue;
                 if (field[y][x] == DOT_HUMAN)
-                    g.setColor(Color.BLUE);
+                    h.setColor(Color.BLUE);
                 else if (field[y][x] == DOT_AI)
-                    g.setColor(Color.RED);
+                    a.setColor(Color.RED);
                 else {
                     throw new RuntimeException(
                             String.format("Can't recognize cell field[%d][%d]: %d",
                                     y, x, field[y][x]));
                 }
-                g.fillOval(x * cellWidth + DOT_PADDING,
+                a.fillOval(x * cellWidth + DOT_PADDING,
                         y * cellHeight + DOT_PADDING,
                         cellWidth - 2 * DOT_PADDING,
                         cellHeight - 2 * DOT_PADDING);
+                h.drawLine(cellWidth - 2 * DOT_PADDING, cellWidth - 2 * DOT_PADDING,
+                        cellHeight - 2 * DOT_PADDING, cellHeight - 2 * DOT_PADDING);
             }
         }
         if (isGameOver) {
@@ -152,9 +154,11 @@ public class Map extends JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g, Graphics h, Graphics a) {
         super.paintComponent(g);
-        render(g);
+        super.paintComponent(h);
+        super.paintComponent(a);
+        render(g, h, a);
     }
 
     private boolean isCellValid(int x, int y) {
